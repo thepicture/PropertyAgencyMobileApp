@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace PropertyAgencyMobileApp.Services
 {
@@ -22,7 +23,43 @@ namespace PropertyAgencyMobileApp.Services
 
         public async Task<bool> AddItemAsync(Event @event)
         {
-            return await Task.FromResult(true);
+            try
+            {
+                using (WebClient client = new WebClient())
+                {
+                    client.QueryString.Add("agent_id", @event.agent_id.ToString());
+                    client.QueryString.Add("datetime", @event.datetime.ToString());
+                    client.QueryString.Add("type", @event.type);
+                    if (@event.duration != null)
+                    {
+                        client.QueryString.Add("duration", @event.duration.ToString());
+                    }
+                    if (@event.comment != null)
+                    {
+                        client.QueryString.Add("comment", @event.comment);
+                    }
+
+                    _ = await client
+                        .UploadValuesTaskAsync($"{baseUrl}/event",
+                                               new NameValueCollection());
+                    return await Task.FromResult(true);
+                }
+            }
+            catch (WebException ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+                if (ex.Status != WebExceptionStatus.Success)
+                {
+                    await DependencyService.Get<IFeedbackService>()
+                                     .Panic("Can't save the new event. " +
+                                     "Try again in a few seconds. " +
+                                     "Otherwise reload the app. " +
+                                     "If this didn't help, " +
+                                     "check your " +
+                                     "internet connection settings");
+                }
+            }
+            return await Task.FromResult(false);
         }
 
         public async Task<bool> UpdateItemAsync(Event @event)

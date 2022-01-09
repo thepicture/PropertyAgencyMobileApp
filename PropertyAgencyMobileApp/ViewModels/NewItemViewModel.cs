@@ -1,4 +1,5 @@
 ﻿using PropertyAgencyMobileApp.Models;
+using PropertyAgencyMobileApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace PropertyAgencyMobileApp.ViewModels
     public class NewItemViewModel : BaseViewModel
     {
         private Event currentEvent = new Event();
-        private DateTime eventDate;
+        private DateTime eventDate = DateTime.Today;
         private TimeSpan eventTime;
-        private int durationInMinutes;
+        private int? durationInMinutes;
         private IEnumerable<OptionEventType> eventTypes;
         private OptionEventType currentEventType;
         private string comment;
@@ -35,8 +36,15 @@ namespace PropertyAgencyMobileApp.ViewModels
 
         private bool ValidateSave()
         {
-            return (CurrentEvent.datetime != 0)
-                && (CurrentEvent.duration != 0);
+            bool isDateCorrect = EventDate != null;
+            bool isTimeCorrect = EventTime != null;
+            bool isSelectedDateHasSense =
+                EventDate + EventTime > DateTime.Now;
+            bool isDurationInMinutesNullOrHasSense = DurationInMinutes == null
+                                                     || DurationInMinutes > 1;
+            return isDateCorrect && isTimeCorrect
+                && isSelectedDateHasSense
+                && isDurationInMinutesNullOrHasSense;
         }
 
         public Command SaveCommand { get; }
@@ -56,7 +64,7 @@ namespace PropertyAgencyMobileApp.ViewModels
             get => eventTime;
             set => SetProperty(ref eventTime, value);
         }
-        public int DurationInMinutes
+        public int? DurationInMinutes
         {
             get => durationInMinutes;
             set => SetProperty(ref durationInMinutes, value);
@@ -79,13 +87,25 @@ namespace PropertyAgencyMobileApp.ViewModels
 
         private async void OnCancel()
         {
-            await Shell.Current.GoToAsync("..");
+            if (await FeedbackService.Ask("Do you really want to cancel " +
+                "adding a new event?"))
+            {
+                await Shell.Current.GoToAsync("..");
+            }
         }
 
         private async void OnSave()
         {
-            _ = await DataStore.AddItemAsync(CurrentEvent);
-
+            Event @event = new Event
+            {
+                agent_id = new AgentSurrogateIdResolver().ResolveId(),
+                comment = Comment,
+                datetime = ((DateTimeOffset)EventDate).ToUnixTimeSeconds(),
+                duration = DurationInMinutes,
+                type = CurrentEventType.Value,
+            };
+            _ = await DataStore.AddItemAsync(@event);
+            await FeedbackService.Inform("The event was successfully added");
             await Shell.Current.GoToAsync("..");
         }
     }

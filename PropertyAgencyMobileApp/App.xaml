@@ -5,26 +5,31 @@
     <Application.Resources>
         <ResourceDictionary>
             <Color x:Key="Primary">#FFFFFF</Color>
-            <Color x:Key="PrimaryButtonColor">#04A0FF</Color>
+            <Color x:Key="PrimaryButtonBackgroundColor">#04A0FF</Color>
             <Style TargetType="Button">
-                <Setter Property="TextColor" Value="Black"></Setter>
+                <Setter Property="TextColor"
+                        Value="White"></Setter>
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource PrimaryButtonBackgroundColor}" />
                 <Setter Property="VisualStateManager.VisualStateGroups">
                     <VisualStateGroupList>
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                    <Setter Property="Opacity"
+                                            Value="1" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Disabled">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="#332196F3" />
+                                    <Setter Property="Opacity"
+                                            Value=".5" />
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-        </ResourceDictionary>        
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
