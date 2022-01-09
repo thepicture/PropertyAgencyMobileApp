@@ -10,20 +10,16 @@ namespace PropertyAgencyMobileApp.ViewModels
 {
     public class ItemsViewModel : BaseViewModel
     {
-        private Item _selectedItem;
-
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<Event> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
-        public Command<Item> ItemTapped { get; }
+        public Command<Event> ItemTapped { get; }
 
         public ItemsViewModel()
         {
             Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            Items = new ObservableCollection<Event>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
-            ItemTapped = new Command<Item>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
@@ -36,7 +32,7 @@ namespace PropertyAgencyMobileApp.ViewModels
             {
                 Items.Clear();
                 var items = await DataStore.GetItemsAsync(true);
-                foreach (var item in items)
+                foreach (Event item in items)
                 {
                     Items.Add(item);
                 }
@@ -54,31 +50,11 @@ namespace PropertyAgencyMobileApp.ViewModels
         public void OnAppearing()
         {
             IsBusy = true;
-            SelectedItem = null;
-        }
-
-        public Item SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
         }
 
         private async void OnAddItem(object obj)
         {
             await Shell.Current.GoToAsync(nameof(NewItemPage));
-        }
-
-        async void OnItemSelected(Item item)
-        {
-            if (item == null)
-                return;
-
-            // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
         }
     }
 }
