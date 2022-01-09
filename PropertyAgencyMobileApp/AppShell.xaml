@@ -6,7 +6,6 @@
        x:DataType="propertyagencymobileapp:AppShell"
        Title="PropertyAgencyMobileApp"
        x:Class="PropertyAgencyMobileApp.AppShell">
-
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle"
@@ -14,7 +13,7 @@
                 <Setter Property="Shell.BackgroundColor"
                         Value="{StaticResource Primary}" />
                 <Setter Property="Shell.ForegroundColor"
-                        Value="White" />
+                        Value="Black" />
                 <Setter Property="Shell.TitleColor"
                         Value="Black" />
                 <Setter Property="Shell.DisabledColor"

@@ -8,84 +8,89 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:converters="clr-namespace:PropertyAgencyMobileApp.Converters"
              x:DataType="local:ItemsViewModel"
-             x:Name="BrowseItemsPage">
-
+             x:Name="BrowseItemsPage"
+             IconImageSource="icon_about.png">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add"
+        <ToolbarItem Text="Add event"
                      Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
         <converters:UnixTimestampToDateTimeValueConverter x:Key="UnixTimestampToDateTime"></converters:UnixTimestampToDateTimeValueConverter>
     </ContentPage.Resources>
+    <Grid>
+        <Image Source="logo.png"
+               VerticalOptions="Center"
+               HorizontalOptions="Center"
+               Opacity=".1"></Image>
+        <RefreshView x:DataType="local:ItemsViewModel"
+                     Command="{Binding LoadItemsCommand}"
+                     IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <CollectionView x:Name="ItemsListView"
+                            ItemsSource="{Binding Items}"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10"
+                                     Margin="0, 0, 0, 15"
+                                     x:DataType="model:Event">
+                            <Frame CornerRadius="3">
+                                <Frame.Background>
+                                    <LinearGradientBrush>
+                                        <GradientStop Offset="0"
+                                                      Color="Red"></GradientStop>
+                                        <GradientStop Offset="1"
+                                                      Color="Blue"></GradientStop>
+                                    </LinearGradientBrush>
+                                </Frame.Background>
+                                <StackLayout>
+                                    <Grid>
 
-    <RefreshView x:DataType="local:ItemsViewModel"
-                 Command="{Binding LoadItemsCommand}"
-                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView"
-                        ItemsSource="{Binding Items}"
-                        SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10"
-                                 Margin="0, 0, 0, 15"
-                                 x:DataType="model:Event">
-                        <Frame CornerRadius="3">
-                            <Frame.Background>
-                                <LinearGradientBrush>
-                                    <GradientStop Offset="0"
-                                                  Color="Red"></GradientStop>
-                                    <GradientStop Offset="1"
-                                                  Color="Blue"></GradientStop>
-                                </LinearGradientBrush>
-                            </Frame.Background>
-                            <StackLayout>
-                                <Grid>
-
-                                    <Label Text="{Binding datetime, 
+                                        <Label Text="{Binding datetime, 
                                                       StringFormat='Event at {0:hh:ss}',
                                                       Converter={StaticResource UnixTimestampToDateTime}}"
-                                           TextColor="White"
-                                           LineBreakMode="NoWrap"
-                                           Style="{DynamicResource ListItemTextStyle}"
-                                           FontSize="Title">
-                                    </Label>
-                                    <Label Text="{Binding type}"
-                                           LineBreakMode="NoWrap"
-                                           HorizontalOptions="End"
-                                           TextTransform="Uppercase"
-                                           TextColor="White"
-                                           VerticalOptions="Center"
-                                           Style="{DynamicResource ListItemDetailTextStyle}"
-                                           FontSize="13" />
-                                </Grid>
-                                <BoxView HeightRequest="1"
-                                         Color="White"
-                                         Opacity=".5"></BoxView>
-                                <Label Text="{Binding duration, 
+                                               TextColor="White"
+                                               LineBreakMode="NoWrap"
+                                               Style="{DynamicResource ListItemTextStyle}"
+                                               FontSize="Title">
+                                        </Label>
+                                        <Label Text="{Binding type}"
+                                               LineBreakMode="NoWrap"
+                                               HorizontalOptions="End"
+                                               TextTransform="Uppercase"
+                                               TextColor="White"
+                                               VerticalOptions="Center"
+                                               Style="{DynamicResource ListItemDetailTextStyle}"
+                                               FontSize="13" />
+                                    </Grid>
+                                    <BoxView HeightRequest="1"
+                                             Color="White"
+                                             Opacity=".5"></BoxView>
+                                    <Label Text="{Binding duration, 
                                                       StringFormat='Lasts for {0} minutes',
                                                       TargetNullValue=''}"
-                                       LineBreakMode="NoWrap"
-                                       TextColor="White"
-                                       Style="{DynamicResource ListItemDetailTextStyle}"
-                                       FontSize="Medium" />
-                                <Label Text="{Binding comment, 
+                                           LineBreakMode="NoWrap"
+                                           TextColor="White"
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           FontSize="Medium" />
+                                    <Label Text="{Binding comment, 
                                                       StringFormat='{0}', 
                                                       TargetNullValue='No comment presented'}"
-                                       LineBreakMode="NoWrap"
-                                       TextColor="White"
-                                       Style="{DynamicResource ListItemDetailTextStyle}"
-                                       FontSize="Medium" />
-                                <Button BackgroundColor="{StaticResource Primary}"
-                                        CommandParameter="{Binding .}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}},
+                                           LineBreakMode="NoWrap"
+                                           TextColor="White"
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           FontSize="Medium" />
+                                    <Button BackgroundColor="{StaticResource Primary}"
+                                            CommandParameter="{Binding .}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}},
                                                           Path=CancelEvent}"
-                                        Text="Cancel"></Button>
-                            </StackLayout>
-                        </Frame>
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+                                            Text="Cancel"></Button>
+                                </StackLayout>
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
 </ContentPage>
