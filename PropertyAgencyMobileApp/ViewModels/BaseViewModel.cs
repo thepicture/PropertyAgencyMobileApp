@@ -10,7 +10,10 @@ namespace PropertyAgencyMobileApp.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Event> DataStore => DependencyService.Get<IDataStore<Event>>();
+        public IDataStore<Event> DataStore =>
+            DependencyService.Get<IDataStore<Event>>();
+        public IFeedbackService FeedbackService =>
+            DependencyService.Get<IFeedbackService>();
 
         bool isBusy = false;
         public bool IsBusy
@@ -41,7 +44,8 @@ namespace PropertyAgencyMobileApp.ViewModels
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        protected void OnPropertyChanged
+            ([CallerMemberName] string propertyName = "")
         {
             var changed = PropertyChanged;
             if (changed == null)

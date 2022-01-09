@@ -10,6 +10,7 @@ namespace PropertyAgencyMobileApp
             InitializeComponent();
 
             DependencyService.Register<EventDataStore>();
+            DependencyService.Register<AlertFeedbackService>();
             MainPage = new AppShell();
         }
 

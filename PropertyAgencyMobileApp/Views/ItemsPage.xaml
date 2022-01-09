@@ -41,15 +41,15 @@
                             </Frame.Background>
                             <StackLayout>
                                 <Grid>
-                                    
-                                <Label Text="{Binding datetime, 
+
+                                    <Label Text="{Binding datetime, 
                                                       StringFormat='Event at {0:hh:ss}',
                                                       Converter={StaticResource UnixTimestampToDateTime}}"
-                                       TextColor="White"
-                                       LineBreakMode="NoWrap"
-                                       Style="{DynamicResource ListItemTextStyle}"
-                                       FontSize="Title">
-                                </Label>
+                                           TextColor="White"
+                                           LineBreakMode="NoWrap"
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           FontSize="Title">
+                                    </Label>
                                     <Label Text="{Binding type}"
                                            LineBreakMode="NoWrap"
                                            HorizontalOptions="End"
@@ -76,6 +76,11 @@
                                        TextColor="White"
                                        Style="{DynamicResource ListItemDetailTextStyle}"
                                        FontSize="Medium" />
+                                <Button BackgroundColor="{StaticResource Primary}"
+                                        CommandParameter="{Binding .}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}},
+                                                          Path=CancelEvent}"
+                                        Text="Cancel"></Button>
                             </StackLayout>
                         </Frame>
                     </StackLayout>

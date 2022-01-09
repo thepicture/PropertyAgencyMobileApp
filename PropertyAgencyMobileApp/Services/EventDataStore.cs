@@ -1,6 +1,7 @@
 ﻿using PropertyAgencyMobileApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Json;
@@ -10,14 +11,12 @@ namespace PropertyAgencyMobileApp.Services
 {
     public class EventDataStore : IDataStore<Event>
     {
-        readonly WebClient client;
-        readonly DataContractJsonSerializer serializer;
-        readonly string baseUrl = "http://10.0.2.2:12345/";
-        readonly int agentId = 1;
+        private readonly DataContractJsonSerializer serializer;
+        private readonly string baseUrl = "http://10.0.2.2:12345";
+        private readonly int agentId = 1;
 
         public EventDataStore()
         {
-            client = new WebClient();
             serializer = new DataContractJsonSerializer(typeof(EventCollection));
         }
 
@@ -33,7 +32,17 @@ namespace PropertyAgencyMobileApp.Services
 
         public async Task<bool> DeleteItemAsync(string id)
         {
-            return await Task.FromResult(true);
+            using (WebClient client = new WebClient())
+            {
+                client.QueryString.Add("agent_id", agentId.ToString());
+                client.QueryString.Add("event_uuid", id);
+                string method = "DELETE";
+                _ = await client
+                    .UploadValuesTaskAsync($"{baseUrl}/event",
+                                           method,
+                                           new NameValueCollection());
+                return await Task.FromResult(true);
+            }
         }
 
         public async Task<Event> GetItemAsync(string id)
@@ -50,14 +59,18 @@ namespace PropertyAgencyMobileApp.Services
                                         .AddDays(1)
                                         .ToUnixTimeSeconds();
 
-            byte[] response =
-                await client
-                .DownloadDataTaskAsync($"{baseUrl}/events"
-                                       + $"?agent_id={agentId}"
-                                       + $"&from={currentUnixDate}"
-                                       + $"&to={tomorrowUnixDate}");
-            Event[] events = ((EventCollection)serializer.ReadObject(new MemoryStream(response))).Events;
-            return await Task.FromResult(events);
+            using (WebClient client = new WebClient())
+            {
+                client.QueryString.Add("agent_id", agentId.ToString());
+                client.QueryString.Add("from", currentUnixDate.ToString());
+                client.QueryString.Add("to", tomorrowUnixDate.ToString());
+                byte[] response =
+                    await client
+                    .DownloadDataTaskAsync($"{baseUrl}/events");
+                Event[] events = ((EventCollection)serializer
+                    .ReadObject(new MemoryStream(response))).Events;
+                return await Task.FromResult(events);
+            }
         }
     }
 }
