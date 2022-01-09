@@ -17,7 +17,7 @@ namespace PropertyAgencyMobileApp.ViewModels
 
         public ItemsViewModel()
         {
-            Title = "Browse";
+            Title = "My events today";
             Items = new ObservableCollection<Event>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 

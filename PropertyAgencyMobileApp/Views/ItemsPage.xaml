@@ -5,6 +5,8 @@
              Title="{Binding Title}"
              xmlns:local="clr-namespace:PropertyAgencyMobileApp.ViewModels"
              xmlns:model="clr-namespace:PropertyAgencyMobileApp.Models"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:converters="clr-namespace:PropertyAgencyMobileApp.Converters"
              x:DataType="local:ItemsViewModel"
              x:Name="BrowseItemsPage">
 
@@ -12,6 +14,11 @@
         <ToolbarItem Text="Add"
                      Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <converters:UnixTimestampToDateTimeValueConverter x:Key="UnixTimestampToDateTime"></converters:UnixTimestampToDateTimeValueConverter>
+    </ContentPage.Resources>
+
     <RefreshView x:DataType="local:ItemsViewModel"
                  Command="{Binding LoadItemsCommand}"
                  IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
@@ -21,15 +28,49 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <StackLayout Padding="10"
+                                 Margin="0, 0, 0, 15"
                                  x:DataType="model:Event">
-                        <Label Text="{Binding comment}"
-                               LineBreakMode="NoWrap"
-                               Style="{DynamicResource ListItemTextStyle}"
-                               FontSize="16" />
-                        <Label Text="{Binding duration}"
-                               LineBreakMode="NoWrap"
-                               Style="{DynamicResource ListItemDetailTextStyle}"
-                               FontSize="13" />
+                        <Frame CornerRadius="3">
+                            <Frame.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Offset="0"
+                                                  Color="Red"></GradientStop>
+                                    <GradientStop Offset="1"
+                                                  Color="Blue"></GradientStop>
+                                </LinearGradientBrush>
+                            </Frame.Background>
+                            <StackLayout>
+                                <Label Text="{Binding datetime, 
+                                                      StringFormat='Event at {0:hh:ss}',
+                                                      Converter={StaticResource UnixTimestampToDateTime}}"
+                                       TextColor="White"
+                                       LineBreakMode="NoWrap"
+                                       Style="{DynamicResource ListItemTextStyle}"
+                                       FontSize="Title">
+                                </Label>
+                                <Label Text="{Binding duration, 
+                                                      StringFormat='Lasts for {0} minutes',
+                                                      TargetNullValue=''}"
+                                       LineBreakMode="NoWrap"
+                                       TextColor="White"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="Medium" />
+                                <Label Text="{Binding type}"
+                                       LineBreakMode="NoWrap"
+                                       HorizontalOptions="End"
+                                       TextTransform="Uppercase"
+                                       TextColor="White"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="13" />
+                                <Label Text="{Binding comment, 
+                                                      StringFormat='{0}', 
+                                                      TargetNullValue='No comment presented'}"
+                                       LineBreakMode="NoWrap"
+                                       TextColor="White"
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       FontSize="Medium" />
+                            </StackLayout>
+                        </Frame>
                     </StackLayout>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

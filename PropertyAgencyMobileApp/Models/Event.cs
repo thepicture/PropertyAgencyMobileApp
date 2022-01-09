@@ -13,8 +13,8 @@
 
         public string uuid { get; set; }
         public int agent_id { get; set; }
-        public int datetime { get; set; }
-        public int duration { get; set; }
+        public long datetime { get; set; }
+        public int? duration { get; set; }
         public string type { get; set; }
         public string comment { get; set; }
     }
