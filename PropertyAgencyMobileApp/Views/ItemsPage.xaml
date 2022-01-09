@@ -40,6 +40,8 @@
                                 </LinearGradientBrush>
                             </Frame.Background>
                             <StackLayout>
+                                <Grid>
+                                    
                                 <Label Text="{Binding datetime, 
                                                       StringFormat='Event at {0:hh:ss}',
                                                       Converter={StaticResource UnixTimestampToDateTime}}"
@@ -48,6 +50,18 @@
                                        Style="{DynamicResource ListItemTextStyle}"
                                        FontSize="Title">
                                 </Label>
+                                    <Label Text="{Binding type}"
+                                           LineBreakMode="NoWrap"
+                                           HorizontalOptions="End"
+                                           TextTransform="Uppercase"
+                                           TextColor="White"
+                                           VerticalOptions="Center"
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           FontSize="13" />
+                                </Grid>
+                                <BoxView HeightRequest="1"
+                                         Color="White"
+                                         Opacity=".5"></BoxView>
                                 <Label Text="{Binding duration, 
                                                       StringFormat='Lasts for {0} minutes',
                                                       TargetNullValue=''}"
@@ -55,13 +69,6 @@
                                        TextColor="White"
                                        Style="{DynamicResource ListItemDetailTextStyle}"
                                        FontSize="Medium" />
-                                <Label Text="{Binding type}"
-                                       LineBreakMode="NoWrap"
-                                       HorizontalOptions="End"
-                                       TextTransform="Uppercase"
-                                       TextColor="White"
-                                       Style="{DynamicResource ListItemDetailTextStyle}"
-                                       FontSize="13" />
                                 <Label Text="{Binding comment, 
                                                       StringFormat='{0}', 
                                                       TargetNullValue='No comment presented'}"
